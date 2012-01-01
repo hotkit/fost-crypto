@@ -4,6 +4,7 @@ fost-lib crypto++
         algebra.cpp
         algparam.cpp
         asn.cpp
+        authenc.cpp
         basecode.cpp
         cbcmac.cpp
         channels.cpp
