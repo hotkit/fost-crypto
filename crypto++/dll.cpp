@@ -98,9 +98,9 @@ static void SetNewAndDeleteFunctionPointers()
 
 	// try getting these directly using mangled names of new and delete operators
 
-	hModule = GetModuleHandle("msvcrtd");
+	hModule = GetModuleHandleA("msvcrtd");
 	if (!hModule)
-		hModule = GetModuleHandle("msvcrt");
+		hModule = GetModuleHandleA("msvcrt");
 	if (hModule)
 	{
 		// 32-bit versions
@@ -116,7 +116,7 @@ static void SetNewAndDeleteFunctionPointers()
 			return;
 	}
 
-	OutputDebugString("Crypto++ was not able to obtain new and delete function pointers.\n");
+	OutputDebugStringA("Crypto++ was not able to obtain new and delete function pointers.\n");
 	throw 0;
 }
 
