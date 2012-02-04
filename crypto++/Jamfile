@@ -63,6 +63,7 @@ fost-lib crypto++
         <toolset>gcc:<cxxflags>-Wno-unused-value
         <toolset>gcc:<cxxflags>-Wno-unused-variable
 
+        <target-os>darwin:<define>CRYPTOPP_DISABLE_ASM
         <target-os>windows:<define>CRYPTOPP_EXPORTS
         <target-os>windows:<define>CRYPTOPP_ENABLE_NAMESPACE_WEAK=1
         <toolset>msvc:<cxxflags>/Oi
