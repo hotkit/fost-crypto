@@ -55,6 +55,16 @@ fost-lib crypto++
         strciphr.cpp
         trdlocal.cpp
     :
+        <target-os>darwin:<define>CRYPTOPP_DISABLE_ASM
+        <target-os>windows:<define>CRYPTOPP_EXPORTS
+        <target-os>windows:<define>CRYPTOPP_ENABLE_NAMESPACE_WEAK=1
+
+        <toolset>clang:<cxxflags>-Wno-switch-enum
+        <toolset>clang:<cxxflags>-Wno-tautological-compare
+        <toolset>clang:<cxxflags>-Wno-unknown-pragmas
+        <toolset>clang:<cxxflags>-Wno-unused-function
+        <toolset>clang:<cxxflags>-Wno-unused-variable
+        <toolset>clang:<define>CRYPTOPP_DISABLE_ASM
         <toolset>gcc:<cxxflags>-Wno-sign-compare
         <toolset>gcc:<cxxflags>-Wno-switch
         <toolset>gcc:<cxxflags>-Wno-unknown-pragmas
@@ -62,10 +72,6 @@ fost-lib crypto++
         <toolset>gcc:<cxxflags>-Wno-unused-function
         <toolset>gcc:<cxxflags>-Wno-unused-value
         <toolset>gcc:<cxxflags>-Wno-unused-variable
-
-        <target-os>darwin:<define>CRYPTOPP_DISABLE_ASM
-        <target-os>windows:<define>CRYPTOPP_EXPORTS
-        <target-os>windows:<define>CRYPTOPP_ENABLE_NAMESPACE_WEAK=1
         <toolset>msvc:<cxxflags>/Oi
     ;
 
