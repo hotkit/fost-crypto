@@ -4,3 +4,9 @@ include $(TOP)/../fost-base/fost.jam ;
 
 
 fost-project cryptopp ;
+
+
+alias crypto :
+        crypto++
+    ;
+
