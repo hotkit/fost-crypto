@@ -67,6 +67,7 @@ fost-lib crypto++
         <toolset>clang:<cxxflags>-Wno-unused-value
         <toolset>clang:<cxxflags>-Wno-unused-variable
         <toolset>clang:<define>CRYPTOPP_DISABLE_ASM
+        <toolset>gcc:<cxxflags>-Wno-delete-non-virtual-dtor
         <toolset>gcc:<cxxflags>-Wno-sign-compare
         <toolset>gcc:<cxxflags>-Wno-switch
         <toolset>gcc:<cxxflags>-Wno-unknown-pragmas
