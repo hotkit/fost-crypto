@@ -60,10 +60,12 @@ fost-lib crypto++
         <target-os>windows:<define>CRYPTOPP_ENABLE_NAMESPACE_WEAK=1
 
         <toolset>clang:<cxxflags>-Wno-delete-non-virtual-dtor
+        <toolset>clang:<cxxflags>-Wno-switch
         <toolset>clang:<cxxflags>-Wno-switch-enum
         <toolset>clang:<cxxflags>-Wno-tautological-compare
         <toolset>clang:<cxxflags>-Wno-unknown-pragmas
         <toolset>clang:<cxxflags>-Wno-unused-function
+        <toolset>clang:<cxxflags>-Wno-unused-private-field
         <toolset>clang:<cxxflags>-Wno-unused-value
         <toolset>clang:<cxxflags>-Wno-unused-variable
         <toolset>clang:<define>CRYPTOPP_DISABLE_ASM
