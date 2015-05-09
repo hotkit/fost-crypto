@@ -8,7 +8,7 @@ NAMESPACE_BEGIN(CryptoPP)
 namespace Weak1 {
 
 //! <a href="http://www.cryptolounge.org/wiki/MD5">MD5</a>
-class CRYPTOPP_DLL MD5 : public IteratedHashWithStaticTransform<word32, LittleEndian, 64, 16, MD5>
+class MD5 : public IteratedHashWithStaticTransform<word32, LittleEndian, 64, 16, MD5>
 {
 public:
 	static void InitState(HashWordType *state);
