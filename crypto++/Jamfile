@@ -49,6 +49,7 @@ fost-lib crypto++
         rsa.cpp
         rw.cpp
         sha.cpp
+        sha3.cpp
         simple.cpp
         skipjack.cpp
         strciphr.cpp
