@@ -22,7 +22,6 @@ fost-lib crypto++
         files.cpp
         filters.cpp
         fips140.cpp
-        fipstest.cpp
         gcm.cpp
         gf2n.cpp
         gfpcrypt.cpp
