@@ -66,6 +66,7 @@ fost-lib crypto++
         <toolset>clang:<cxxflags>-Wno-switch
         <toolset>clang:<cxxflags>-Wno-tautological-compare
         <toolset>clang:<cxxflags>-Wno-tautological-constant-out-of-range-compare
+        <toolset>clang:<cxxflags>-Wno-undefined-var-template
         <toolset>clang:<cxxflags>-Wno-unknown-pragmas
         <toolset>clang:<cxxflags>-Wno-unused-function
         <toolset>clang:<cxxflags>-Wno-unused-private-field
