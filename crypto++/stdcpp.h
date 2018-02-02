@@ -48,6 +48,7 @@ namespace std {
 #include <cstddef>
 #include <cstring>
 #include <climits>
+#include <cmath>
 
 // uintptr_t and ptrdiff_t
 #if (__cplusplus < 201103L) && (!defined(_MSC_VER) || (_MSC_VER >= 1700))
@@ -61,20 +62,10 @@ namespace std {
 # include <vector.cc>
 #endif
 
-// for alloca
-#if defined(CRYPTOPP_BSD_AVAILABLE)
-# include <stdlib.h>
-#elif defined(CRYPTOPP_UNIX_AVAILABLE) || defined(__sun) || defined(QNX)
-# include <alloca.h>
-#elif defined(CRYPTOPP_WIN32_AVAILABLE) || defined(__MINGW32__) || defined(__BORLANDC__)
-# include <malloc.h>
-#endif
-
-#ifdef _MSC_VER
-# pragma warning(disable: 4231)	// re-disable this
-# ifdef _CRTAPI1
-#  define CRYPTOPP_MSVCRT6
-# endif
+// C++Builder's standard library (Dinkumware) do not have C's global log() function
+// https://github.com/weidai11/cryptopp/issues/520
+#ifdef __BORLANDC__
+using std::log;
 #endif
 
 #endif

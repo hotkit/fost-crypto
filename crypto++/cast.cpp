@@ -1,4 +1,4 @@
-// cast.cpp - written and placed in the public domain by Wei Dai and Leonard Janke
+// cast.cpp - originally written and placed in the public domain by Wei Dai and Leonard Janke
 // based on Steve Reid's public domain cast.c
 
 #include "pch.h"
@@ -100,7 +100,7 @@ void CAST128::Base::UncheckedSetKey(const byte *userKey, unsigned int keylength,
 
 	reduced = (keylength <= 10);
 
-	word32 X[4], Z[4];
+	word32 X[4], Z[4]={0};
 	GetUserKey(BIG_ENDIAN_ORDER, X, 4, userKey, keylength);
 
 #define x(i) GETBYTE(X[i/4], 3-i%4)
@@ -290,7 +290,7 @@ void CAST256::Base::UncheckedSetKey(const byte *userKey, unsigned int keylength,
 		}
 	}
 
-	memset(kappa, 0, sizeof(kappa));
+	SecureWipeBuffer(kappa, 8);
 }
 
 NAMESPACE_END

@@ -1,12 +1,7 @@
-// trdlocal.cpp - written and placed in the public domain by Wei Dai
+// trdlocal.cpp - originally written and placed in the public domain by Wei Dai
 
 #include "pch.h"
 #include "config.h"
-
-// TODO: fix this when more complete C++11 support is cut-in
-#if CRYPTOPP_MSC_VERSION
-# pragma warning(disable: 4297)
-#endif
 
 #ifndef CRYPTOPP_IMPORTS
 
@@ -19,6 +14,10 @@
 #include <windows.h>
 #endif
 
+#if CRYPTOPP_GCC_DIAGNOSTIC_AVAILABLE
+# pragma GCC diagnostic ignored "-Wc++11-compat"
+#endif
+
 NAMESPACE_BEGIN(CryptoPP)
 
 ThreadLocalStorage::Err::Err(const std::string& operation, int error)
@@ -26,6 +25,8 @@ ThreadLocalStorage::Err::Err(const std::string& operation, int error)
 {
 }
 
+// Windows: "a process may have up to TLS_MINIMUM_AVAILABLE indexes (guaranteed to be greater than
+// or equal to 64)", https://support.microsoft.com/en-us/help/94804/info-thread-local-storage-overview
 ThreadLocalStorage::ThreadLocalStorage()
 {
 #ifdef HAS_WINTHREADS
@@ -35,7 +36,7 @@ ThreadLocalStorage::ThreadLocalStorage()
 		throw Err("TlsAlloc", GetLastError());
 #else
 	m_index = 0;
-	int error = pthread_key_create(&m_index, NULL);
+	int error = pthread_key_create(&m_index, NULLPTR);
 	CRYPTOPP_ASSERT(!error);
 	if (error)
 		throw Err("pthread_key_create", error);
