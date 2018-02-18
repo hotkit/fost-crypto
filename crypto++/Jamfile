@@ -146,8 +146,6 @@ fost-lib crypto++
         # AESNI or ARMv7a/ARMv8a available
         <source>rijndael-simd.cpp
 
-        <target-os>darwin:<define>CRYPTOPP_DISABLE_ASM
-
         <target-os>windows:<define>CRYPTOPP_EXPORTS
         <target-os>windows:<define>CRYPTOPP_ENABLE_NAMESPACE_WEAK=1
 
