@@ -3,7 +3,7 @@
 /// \file cryptlib.h
 /// \brief Abstract base classes that provide a uniform interface to this library.
 
-/*!	\mainpage Crypto++ Library 6.0 API Reference
+/*!	\mainpage Crypto++ Library 6.1 API Reference
 <dl>
 <dt>Abstract Base Classes<dd>
 	cryptlib.h
@@ -14,8 +14,7 @@
 	\ref DES_EDE2 "2-key Triple-DES", \ref DES_EDE3 "3-key Triple-DES",	\ref DES_XEX3 "DESX",
 	GOST, IDEA, \ref LR "Luby-Rackoff", Kalyna (128/256/512), MARS, RC2, RC5, RC6, \ref SAFER_K
 	"SAFER-K", \ref SAFER_SK "SAFER-SK", SEED, Serpent, \ref SHACAL2 "SHACAL-2", SHARK, SKIPJACK,
-	\ref SIMON128 "SIMON-64 and SIMON-128", \ref SPECK128 "SPECK-64 and SPECK-128", SM4, Square,
-	TEA, \ref ThreeWay "3-Way", \ref Threefish256 "Threefish (256/512/1024)", Twofish, XTEA
+	SM4, Square, TEA, \ref ThreeWay "3-Way", \ref Threefish256 "Threefish (256/512/1024)", Twofish, XTEA
 <dt>Stream Ciphers<dd>
 	ChaCha (ChaCha-8/12/20), \ref Panama "Panama-LE", \ref Panama "Panama-BE", Salsa20,
 	\ref SEAL "SEAL-LE", \ref SEAL "SEAL-BE", WAKE, XSalsa20
@@ -850,9 +849,11 @@ public:
 
 	/// \brief Provides input and output data alignment for optimal performance.
 	/// \return the input data alignment that provides optimal performance
+	/// \sa GetAlignment() and OptimalBlockSize()
 	virtual unsigned int OptimalDataAlignment() const;
 
-	/// returns true if this is a permutation (i.e. there is an inverse transformation)
+	/// \brief Determines if the transformation is a permutation
+	/// \returns true if this is a permutation (i.e. there is an inverse transformation)
 	virtual bool IsPermutation() const {return true;}
 
 	/// \brief Determines if the cipher is being operated in its forward direction
@@ -931,6 +932,7 @@ public:
 
 	/// \brief Provides input and output data alignment for optimal performance
 	/// \return the input data alignment that provides optimal performance
+	/// \sa GetAlignment() and OptimalBlockSize()
 	virtual unsigned int OptimalDataAlignment() const;
 
 	/// \brief Encrypt or decrypt an array of bytes
@@ -1124,6 +1126,7 @@ public:
 
 	/// \brief Provides input and output data alignment for optimal performance
 	/// \return the input data alignment that provides optimal performance
+	/// \sa GetAlignment() and OptimalBlockSize()
 	virtual unsigned int OptimalDataAlignment() const;
 
 	/// \brief Updates the hash with additional input and computes the hash of the current message
@@ -2248,6 +2251,7 @@ public:
 	/// \sa SupportsPrecomputation(), Precompute()
 	virtual void LoadPrecomputation(BufferedTransformation &storedPrecomputation)
 		{CRYPTOPP_UNUSED(storedPrecomputation); CRYPTOPP_ASSERT(!SupportsPrecomputation()); throw NotImplemented("CryptoMaterial: this object does not support precomputation");}
+
 	/// \brief Save precomputation for later use
 	/// \param storedPrecomputation BufferedTransformation to write the precomputation
 	/// \throws NotImplemented
@@ -2763,6 +2767,7 @@ public:
 /// \details A key agreement domain is a set of parameters that must be shared
 ///   by two parties in a key agreement protocol, along with the algorithms
 ///   for generating key pairs and deriving agreed values.
+/// \since Crypto++ 3.0
 class CRYPTOPP_DLL CRYPTOPP_NO_VTABLE SimpleKeyAgreementDomain : public KeyAgreementAlgorithm
 {
 public:
@@ -2821,6 +2826,7 @@ public:
 /// \details In an authenticated key agreement protocol, each party has two
 ///   key pairs. The long-lived key pair is called the static key pair,
 ///   and the short-lived key pair is called the ephemeral key pair.
+/// \since Crypto++ 3.0
 class CRYPTOPP_DLL CRYPTOPP_NO_VTABLE AuthenticatedKeyAgreementDomain : public KeyAgreementAlgorithm
 {
 public:
@@ -3000,6 +3006,8 @@ public:
 		const byte *passwordOrVerifier, unsigned int passwordOrVerifierLength);
 };
 
+/// \brief Password based key agreement domain
+/// \since Crypto++ 3.0
 class PasswordAuthenticatedKeyAgreementDomain : public KeyAgreementAlgorithm
 {
 public:

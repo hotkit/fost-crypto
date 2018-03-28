@@ -78,7 +78,7 @@ inline void SIMON_Decrypt(W p[2], const W c[2], const W k[R])
     if (R & 1)
     {
         const W t = p[1]; p[1] = p[0]; p[0] = t;
-        p[1] ^= k[rounds - 1]; p[1] ^= f(p[0]);
+        p[1] ^= k[R - 1]; p[1] ^= f(p[0]);
         rounds--;
     }
 
@@ -91,7 +91,7 @@ inline void SIMON_Decrypt(W p[2], const W c[2], const W k[R])
 ///   not worthwhile because all instantiations would need specialization.
 /// \param key empty subkey array
 /// \param k user key array
-inline void SIMON64_ExpandKey_42R3K(word32 key[42], const word32 k[3])
+inline void SIMON64_ExpandKey_3W(word32 key[42], const word32 k[3])
 {
     const word32 c = 0xfffffffc;
     word64 z = W64LIT(0x7369f885192c0ef5);
@@ -109,7 +109,7 @@ inline void SIMON64_ExpandKey_42R3K(word32 key[42], const word32 k[3])
 ///   not worthwhile because all instantiations would need specialization.
 /// \param key empty subkey array
 /// \param k user key array
-inline void SIMON64_ExpandKey_44R4K(word32 key[44], const word32 k[4])
+inline void SIMON64_ExpandKey_4W(word32 key[44], const word32 k[4])
 {
     const word32 c = 0xfffffffc;
     word64 z = W64LIT(0xfc2ce51207a635db);
@@ -127,7 +127,7 @@ inline void SIMON64_ExpandKey_44R4K(word32 key[44], const word32 k[4])
 ///   not worthwhile because all instantiations would need specialization.
 /// \param key empty subkey array
 /// \param k user key array
-inline void SIMON128_ExpandKey_68R2K(word64 key[68], const word64 k[2])
+inline void SIMON128_ExpandKey_2W(word64 key[68], const word64 k[2])
 {
     const word64 c = W64LIT(0xfffffffffffffffc);
     word64 z = W64LIT(0x7369f885192c0ef5);
@@ -148,7 +148,7 @@ inline void SIMON128_ExpandKey_68R2K(word64 key[68], const word64 k[2])
 ///   not worthwhile because all instantiations would need specialization.
 /// \param key empty subkey array
 /// \param k user key array
-inline void SIMON128_ExpandKey_69R3K(word64 key[69], const word64 k[3])
+inline void SIMON128_ExpandKey_3W(word64 key[69], const word64 k[3])
 {
     const word64 c = W64LIT(0xfffffffffffffffc);
     word64 z = W64LIT(0xfc2ce51207a635db);
@@ -169,7 +169,7 @@ inline void SIMON128_ExpandKey_69R3K(word64 key[69], const word64 k[3])
 ///   not worthwhile because all instantiations would need specialization.
 /// \param key empty subkey array
 /// \param k user key array
-inline void SIMON128_ExpandKey_72R4K(word64 key[72], const word64 k[4])
+inline void SIMON128_ExpandKey_4W(word64 key[72], const word64 k[4])
 {
     const word64 c = W64LIT(0xfffffffffffffffc);
     word64 z = W64LIT(0xfdc94c3a046d678b);
@@ -233,20 +233,23 @@ void SIMON64::Base::UncheckedSetKey(const byte *userKey, unsigned int keyLength,
     // Building the key schedule table requires {3,4} words workspace.
     // Encrypting and decrypting requires 4 words workspace.
     m_kwords = keyLength/sizeof(word32);
-    m_wspace.New(STDMAX(m_kwords,4U));
-    GetUserKey(BIG_ENDIAN_ORDER, m_wspace.begin(), m_kwords, userKey, keyLength);
+    m_wspace.New(4U);
+
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word32, LittleEndian, false> KeyBlock;
+    KeyBlock kblk(userKey);
 
     switch (m_kwords)
     {
     case 3:
-        m_rkeys.New(42);
-        m_rounds = 42;
-        SIMON64_ExpandKey_42R3K(m_rkeys, m_wspace);
+        m_rkeys.New((m_rounds = 42));
+        kblk(m_wspace[2])(m_wspace[1])(m_wspace[0]);
+        SIMON64_ExpandKey_3W(m_rkeys, m_wspace);
         break;
     case 4:
-        m_rkeys.New(44);
-        m_rounds = 44;
-        SIMON64_ExpandKey_44R4K(m_rkeys, m_wspace);
+        m_rkeys.New((m_rounds = 44));
+        kblk(m_wspace[3])(m_wspace[2])(m_wspace[1])(m_wspace[0]);
+        SIMON64_ExpandKey_4W(m_rkeys, m_wspace);
         break;
     default:
         CRYPTOPP_ASSERT(0);;
@@ -255,9 +258,9 @@ void SIMON64::Base::UncheckedSetKey(const byte *userKey, unsigned int keyLength,
 
 void SIMON64::Enc::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
 {
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef GetBlock<word32, BigEndian, false> InBlock;
-    InBlock iblk(inBlock); iblk(m_wspace[0])(m_wspace[1]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word32, LittleEndian, false> InBlock;
+    InBlock iblk(inBlock); iblk(m_wspace[1])(m_wspace[0]);
 
     switch (m_rounds)
     {
@@ -271,16 +274,16 @@ void SIMON64::Enc::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock,
         CRYPTOPP_ASSERT(0);;
     }
 
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef PutBlock<word32, BigEndian, false> OutBlock;
-    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[2])(m_wspace[3]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef PutBlock<word32, LittleEndian, false> OutBlock;
+    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[3])(m_wspace[2]);
 }
 
 void SIMON64::Dec::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
 {
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef GetBlock<word32, BigEndian, false> InBlock;
-    InBlock iblk(inBlock); iblk(m_wspace[0])(m_wspace[1]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word32, LittleEndian, false> InBlock;
+    InBlock iblk(inBlock); iblk(m_wspace[1])(m_wspace[0]);
 
     switch (m_rounds)
     {
@@ -294,9 +297,9 @@ void SIMON64::Dec::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock,
         CRYPTOPP_ASSERT(0);;
     }
 
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef PutBlock<word32, BigEndian, false> OutBlock;
-    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[2])(m_wspace[3]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef PutBlock<word32, LittleEndian, false> OutBlock;
+    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[3])(m_wspace[2]);
 }
 
 ///////////////////////////////////////////////////////////
@@ -309,25 +312,28 @@ void SIMON128::Base::UncheckedSetKey(const byte *userKey, unsigned int keyLength
     // Building the key schedule table requires {2,3,4} words workspace.
     // Encrypting and decrypting requires 4 words workspace.
     m_kwords = keyLength/sizeof(word64);
-    m_wspace.New(STDMAX(m_kwords,4U));
-    GetUserKey(BIG_ENDIAN_ORDER, m_wspace.begin(), m_kwords, userKey, keyLength);
+    m_wspace.New(4U);
+
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word64, LittleEndian, false> KeyBlock;
+    KeyBlock kblk(userKey);
 
     switch (m_kwords)
     {
     case 2:
-        m_rkeys.New(68);
-        m_rounds = 68;
-        SIMON128_ExpandKey_68R2K(m_rkeys, m_wspace);
+        m_rkeys.New((m_rounds = 68));
+        kblk(m_wspace[1])(m_wspace[0]);
+        SIMON128_ExpandKey_2W(m_rkeys, m_wspace);
         break;
     case 3:
-        m_rkeys.New(69);
-        m_rounds = 69;
-        SIMON128_ExpandKey_69R3K(m_rkeys, m_wspace);
+        m_rkeys.New((m_rounds = 69));
+        kblk(m_wspace[2])(m_wspace[1])(m_wspace[0]);
+        SIMON128_ExpandKey_3W(m_rkeys, m_wspace);
         break;
     case 4:
-        m_rkeys.New(72);
-        m_rounds = 72;
-        SIMON128_ExpandKey_72R4K(m_rkeys, m_wspace);
+        m_rkeys.New((m_rounds = 72));
+        kblk(m_wspace[3])(m_wspace[2])(m_wspace[1])(m_wspace[0]);
+        SIMON128_ExpandKey_4W(m_rkeys, m_wspace);
         break;
     default:
         CRYPTOPP_ASSERT(0);;
@@ -336,9 +342,9 @@ void SIMON128::Base::UncheckedSetKey(const byte *userKey, unsigned int keyLength
 
 void SIMON128::Enc::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
 {
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef GetBlock<word64, BigEndian, false> InBlock;
-    InBlock iblk(inBlock); iblk(m_wspace[0])(m_wspace[1]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word64, LittleEndian, false> InBlock;
+    InBlock iblk(inBlock); iblk(m_wspace[1])(m_wspace[0]);
 
     switch (m_rounds)
     {
@@ -355,16 +361,16 @@ void SIMON128::Enc::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock
         CRYPTOPP_ASSERT(0);;
     }
 
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef PutBlock<word64, BigEndian, false> OutBlock;
-    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[2])(m_wspace[3]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef PutBlock<word64, LittleEndian, false> OutBlock;
+    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[3])(m_wspace[2]);
 }
 
 void SIMON128::Dec::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
 {
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef GetBlock<word64, BigEndian, false> InBlock;
-    InBlock iblk(inBlock); iblk(m_wspace[0])(m_wspace[1]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word64, LittleEndian, false> InBlock;
+    InBlock iblk(inBlock); iblk(m_wspace[1])(m_wspace[0]);
 
     switch (m_rounds)
     {
@@ -381,9 +387,9 @@ void SIMON128::Dec::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock
         CRYPTOPP_ASSERT(0);;
     }
 
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef PutBlock<word64, BigEndian, false> OutBlock;
-    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[2])(m_wspace[3]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef PutBlock<word64, LittleEndian, false> OutBlock;
+    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[3])(m_wspace[2]);
 }
 
 #if defined(CRYPTOPP_SIMON64_ADVANCED_PROCESS_BLOCKS)

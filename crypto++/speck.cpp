@@ -208,19 +208,22 @@ void SPECK64::Base::UncheckedSetKey(const byte *userKey, unsigned int keyLength,
     // Building the key schedule table requires {3,4} words workspace.
     // Encrypting and decrypting requires 4 words workspace.
     m_kwords = keyLength/sizeof(word32);
-    m_wspace.New(STDMAX(m_kwords,4U));
-    GetUserKey(BIG_ENDIAN_ORDER, m_wspace.begin(), m_kwords, userKey, keyLength);
+    m_wspace.New(4U);
+
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word32, LittleEndian, false> KeyBlock;
+    KeyBlock kblk(userKey);
 
     switch (m_kwords)
     {
     case 3:
-        m_rkeys.New(26);
-        m_rounds = 26;
+        m_rkeys.New((m_rounds = 26));
+        kblk(m_wspace[2])(m_wspace[1])(m_wspace[0]);
         SPECK_ExpandKey_3W<word32, 26>(m_rkeys, m_wspace);
         break;
     case 4:
-        m_rkeys.New(27);
-        m_rounds = 27;
+        m_rkeys.New((m_rounds = 27));
+        kblk(m_wspace[3])(m_wspace[2])(m_wspace[1])(m_wspace[0]);
         SPECK_ExpandKey_4W<word32, 27>(m_rkeys, m_wspace);
         break;
     default:
@@ -230,9 +233,9 @@ void SPECK64::Base::UncheckedSetKey(const byte *userKey, unsigned int keyLength,
 
 void SPECK64::Enc::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
 {
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef GetBlock<word32, BigEndian, false> InBlock;
-    InBlock iblk(inBlock); iblk(m_wspace[0])(m_wspace[1]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word32, LittleEndian, false> InBlock;
+    InBlock iblk(inBlock); iblk(m_wspace[1])(m_wspace[0]);
 
     switch (m_rounds)
     {
@@ -246,16 +249,16 @@ void SPECK64::Enc::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock,
         CRYPTOPP_ASSERT(0);;
     }
 
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef PutBlock<word32, BigEndian, false> OutBlock;
-    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[2])(m_wspace[3]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef PutBlock<word32, LittleEndian, false> OutBlock;
+    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[3])(m_wspace[2]);
 }
 
 void SPECK64::Dec::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
 {
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef GetBlock<word32, BigEndian, false> InBlock;
-    InBlock iblk(inBlock); iblk(m_wspace[0])(m_wspace[1]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word32, LittleEndian, false> InBlock;
+    InBlock iblk(inBlock); iblk(m_wspace[1])(m_wspace[0]);
 
     switch (m_rounds)
     {
@@ -269,9 +272,9 @@ void SPECK64::Dec::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock,
         CRYPTOPP_ASSERT(0);;
     }
 
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef PutBlock<word32, BigEndian, false> OutBlock;
-    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[2])(m_wspace[3]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef PutBlock<word32, LittleEndian, false> OutBlock;
+    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[3])(m_wspace[2]);
 }
 
 ///////////////////////////////////////////////////////////
@@ -284,24 +287,27 @@ void SPECK128::Base::UncheckedSetKey(const byte *userKey, unsigned int keyLength
     // Building the key schedule table requires {2,3,4} words workspace.
     // Encrypting and decrypting requires 4 words workspace.
     m_kwords = keyLength/sizeof(word64);
-    m_wspace.New(STDMAX(m_kwords,4U));
-    GetUserKey(BIG_ENDIAN_ORDER, m_wspace.begin(), m_kwords, userKey, keyLength);
+    m_wspace.New(4U);
+
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word64, LittleEndian, false> KeyBlock;
+    KeyBlock kblk(userKey);
 
     switch (m_kwords)
     {
     case 2:
-        m_rkeys.New(32);
-        m_rounds = 32;
+        m_rkeys.New((m_rounds = 32));
+        kblk(m_wspace[1])(m_wspace[0]);
         SPECK_ExpandKey_2W<word64, 32>(m_rkeys, m_wspace);
         break;
     case 3:
-        m_rkeys.New(33);
-        m_rounds = 33;
+        m_rkeys.New((m_rounds = 33));
+        kblk(m_wspace[2])(m_wspace[1])(m_wspace[0]);
         SPECK_ExpandKey_3W<word64, 33>(m_rkeys, m_wspace);
         break;
     case 4:
-        m_rkeys.New(34);
-        m_rounds = 34;
+        m_rkeys.New((m_rounds = 34));
+        kblk(m_wspace[3])(m_wspace[2])(m_wspace[1])(m_wspace[0]);
         SPECK_ExpandKey_4W<word64, 34>(m_rkeys, m_wspace);
         break;
     default:
@@ -311,9 +317,9 @@ void SPECK128::Base::UncheckedSetKey(const byte *userKey, unsigned int keyLength
 
 void SPECK128::Enc::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
 {
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef GetBlock<word64, BigEndian, false> InBlock;
-    InBlock iblk(inBlock); iblk(m_wspace[0])(m_wspace[1]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word64, LittleEndian, false> InBlock;
+    InBlock iblk(inBlock); iblk(m_wspace[1])(m_wspace[0]);
 
     switch (m_rounds)
     {
@@ -330,16 +336,16 @@ void SPECK128::Enc::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock
         CRYPTOPP_ASSERT(0);;
     }
 
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef PutBlock<word64, BigEndian, false> OutBlock;
-    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[2])(m_wspace[3]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef PutBlock<word64, LittleEndian, false> OutBlock;
+    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[3])(m_wspace[2]);
 }
 
 void SPECK128::Dec::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock, byte *outBlock) const
 {
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef GetBlock<word64, BigEndian, false> InBlock;
-    InBlock iblk(inBlock); iblk(m_wspace[0])(m_wspace[1]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef GetBlock<word64, LittleEndian, false> InBlock;
+    InBlock iblk(inBlock); iblk(m_wspace[1])(m_wspace[0]);
 
     switch (m_rounds)
     {
@@ -356,9 +362,9 @@ void SPECK128::Dec::ProcessAndXorBlock(const byte *inBlock, const byte *xorBlock
         CRYPTOPP_ASSERT(0);;
     }
 
-    // Reverse bytes on LittleEndian; align pointer on BigEndian
-    typedef PutBlock<word64, BigEndian, false> OutBlock;
-    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[2])(m_wspace[3]);
+    // Do the endian gyrations from the paper and align pointers
+    typedef PutBlock<word64, LittleEndian, false> OutBlock;
+    OutBlock oblk(xorBlock, outBlock); oblk(m_wspace[3])(m_wspace[2]);
 }
 
 #if defined(CRYPTOPP_SPECK64_ADVANCED_PROCESS_BLOCKS)
