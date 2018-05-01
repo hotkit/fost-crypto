@@ -157,7 +157,8 @@ else()
     if(${ANDROID_ABI} MATCHES "^x86")
         target_compile_options(crypto++ PUBLIC
             -maes -mpclmul -msha -msse4.1 -msse4.2 -mssse3)
-    elseif(${ANDROID_ABI} MATCHES "^arm")
+    elseif(${ANDROID_ABI} MATCHES "v7")
+        # Setting NEON only really makes sense for this ABI
         target_compile_options(crypto++ PUBLIC -mfpu=neon)
     endif()
 endif()
