@@ -143,7 +143,22 @@ add_library(crypto++
         # AESNI or ARMv7a/ARMv8a available
         crypto++/sse-simd.cpp
     )
-target_compile_options(crypto++
-    PUBLIC -maes -mpclmul -msha -msse4.1 -msse4.2 -mssse3)
+
 target_include_directories(crypto++ PUBLIC .)
+
+if("${ANDROID_ABI}" STREQUAL "")
+    # This assumes that we're going with x86 like systems if we're not building Android
+    target_compile_options(crypto++
+        PUBLIC -maes -mpclmul -msha -msse4.1 -msse4.2 -mssse3)
+else()
+    include(AndroidNdkModules)
+    android_ndk_import_module_cpufeatures()
+    target_link_libraries(crypto++ cpufeatures)
+    if(${ANDROID_ABI} MATCHES "^x86")
+        target_compile_options(crypto++ PUBLIC
+            -maes -mpclmul -msha -msse4.1 -msse4.2 -mssse3)
+    elseif(${ANDROID_ABI} MATCHES "^arm")
+        target_compile_options(crypto++ PUBLIC -mfpu=neon)
+    endif()
+endif()
 
