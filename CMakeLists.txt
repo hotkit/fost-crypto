@@ -145,6 +145,7 @@ add_library(crypto++
     )
 
 target_include_directories(crypto++ PUBLIC .)
+target_compile_options(crypto++ PRIVATE -fPIC)
 
 if("${ANDROID_ABI}" STREQUAL "")
     # This assumes that we're going with x86 like systems if we're not building Android
