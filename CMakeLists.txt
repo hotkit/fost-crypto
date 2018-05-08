@@ -151,6 +151,7 @@ if("${ANDROID_ABI}" STREQUAL "")
     # This assumes that we're going with x86 like systems if we're not building Android
     target_compile_options(crypto++
         PUBLIC -maes -mpclmul -msha -msse4.1 -msse4.2 -mssse3)
+    install(TARGETS crypto++ LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 else()
     include(AndroidNdkModules)
     android_ndk_import_module_cpufeatures()
