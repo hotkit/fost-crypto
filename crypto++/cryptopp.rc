@@ -45,13 +45,13 @@ BEGIN
         BEGIN
             VALUE "Comments", "Free crypto library, more information available at www.cryptopp.com"
             VALUE "CompanyName", "Wei Dai"
-            VALUE "FileDescription", "Crypto++® Library DLL"
+            VALUE "FileDescription", "Crypto++Â® Library DLL"
             VALUE "FileVersion", "6, 1, 0, 0"
             VALUE "InternalName", "cryptopp"
-            VALUE "LegalCopyright", "Copyright© 1995-2016 by Wei Dai"
-            VALUE "LegalTrademarks", "Crypto++®"
+            VALUE "LegalCopyright", "CopyrightÂ© 1995-2016 by Wei Dai"
+            VALUE "LegalTrademarks", "Crypto++Â®"
             VALUE "OriginalFilename", "cryptopp.dll"
-            VALUE "ProductName", "Crypto++® Library"
+            VALUE "ProductName", "Crypto++Â® Library"
             VALUE "ProductVersion", "6, 1, 0, 0"
         END
     END
