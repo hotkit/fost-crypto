@@ -104,6 +104,7 @@ add_library(crypto++
         crypto++/rw.cpp
         crypto++/safer.cpp
         crypto++/salsa.cpp
+        crypto++/scrypt.cpp
         crypto++/seal.cpp
         crypto++/seed.cpp
         crypto++/serpent.cpp
