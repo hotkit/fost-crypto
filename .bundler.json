@@ -1,6 +1,6 @@
 {
     "ignore": {
-        "startswith": ["crypto++"]
+        "names": ["crypto++"]
     }
 }
 
