@@ -1,4 +1,4 @@
-add_library(crypto++
+add_library(crypto++ STATIC
         crypto++/cryptlib.cpp
         crypto++/cpu.cpp
         crypto++/integer.cpp
@@ -163,6 +163,10 @@ else()
     elseif(${ANDROID_ABI} STREQUAL "armeabi-v7a")
         # Setting NEON only really makes sense for this ABI
         target_compile_options(crypto++ PUBLIC -mfpu=neon)
+    elseif(${ANDROID_ABI} STREQUAL "arm64-v8a")
+        # There isn't anything that we need to do for this architecture
+    else()
+        message(FATAL_ERROR "Can't determine android architecture " ${ANDROID_ABI})
     endif()
 endif()
 
