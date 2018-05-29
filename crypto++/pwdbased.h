@@ -8,6 +8,7 @@
 #ifndef CRYPTOPP_PWDBASED_H
 #define CRYPTOPP_PWDBASED_H
 
+#include "algparam.h"
 #include "cryptlib.h"
 #include "hrtimer.h"
 #include "integer.h"
