@@ -148,6 +148,13 @@ add_library(crypto++ STATIC
 target_include_directories(crypto++ PUBLIC .)
 target_compile_options(crypto++ PRIVATE -fPIC)
 
+if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    target_compile_options(crypto++ PRIVATE
+            -Wno-class-memaccess
+            -Wno-unknown-pragmas
+        )
+endif()
+
 if("${ANDROID_ABI}" STREQUAL "")
     # This assumes that we're going with x86 like systems if we're not building Android
     target_compile_options(crypto++
