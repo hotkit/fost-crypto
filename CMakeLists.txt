@@ -153,6 +153,12 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
             -Wno-class-memaccess
             -Wno-unknown-pragmas
         )
+elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    target_compile_options(crypto++ PRIVATE
+            -Wno-keyword-macro
+            -Wno-unused-const-variable
+            -Wno-unused-private-field
+        )
 endif()
 
 if("${ANDROID_ABI}" STREQUAL "")
