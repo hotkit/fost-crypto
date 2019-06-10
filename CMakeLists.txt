@@ -205,6 +205,7 @@ target_compile_options(crypto++ PRIVATE -fPIC)
 target_compile_features(crypto++ PUBLIC cxx_std_17)
 
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    target_compile_definitions(crypto++ PUBLIC CRYPTOPP_DISABLE_AVX)
     target_compile_options(crypto++ PRIVATE
             -Wno-class-memaccess
             -Wno-unknown-pragmas
