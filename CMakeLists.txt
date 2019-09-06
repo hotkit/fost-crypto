@@ -42,14 +42,12 @@ add_library(crypto++ STATIC
         crypto++/crc.cpp
         crypto++/crc_simd.cpp
         crypto++/darn.cpp
-        crypto++/datatest.cpp
         crypto++/default.cpp
         crypto++/des.cpp
         crypto++/dessp.cpp
         crypto++/dh2.cpp
         crypto++/dh.cpp
         crypto++/dll.cpp
-        crypto++/dlltest.cpp
         crypto++/donna_32.cpp
         crypto++/donna_64.cpp
         crypto++/donna_sse.cpp
@@ -66,7 +64,6 @@ add_library(crypto++ STATIC
         crypto++/filters.cpp
         crypto++/fips140.cpp
         crypto++/fipsalgt.cpp
-        crypto++/fipstest.cpp
         crypto++/gcm.cpp
         crypto++/gcm_simd.cpp
         crypto++/gf2_32.cpp
@@ -127,10 +124,6 @@ add_library(crypto++ STATIC
         crypto++/rc6.cpp
         crypto++/rdrand.cpp
         crypto++/rdtables.cpp
-        crypto++/regtest1.cpp
-        crypto++/regtest2.cpp
-        crypto++/regtest3.cpp
-        crypto++/regtest4.cpp
         crypto++/rijndael.cpp
         crypto++/rijndael_simd.cpp
         crypto++/ripemd.cpp
@@ -170,7 +163,6 @@ add_library(crypto++ STATIC
         crypto++/sse_simd.cpp
         crypto++/strciphr.cpp
         crypto++/tea.cpp
-        crypto++/test.cpp
         crypto++/tftables.cpp
         crypto++/threefish.cpp
         crypto++/tiger.cpp
@@ -178,17 +170,6 @@ add_library(crypto++ STATIC
         crypto++/ttmac.cpp
         crypto++/tweetnacl.cpp
         crypto++/twofish.cpp
-        crypto++/validat0.cpp
-        crypto++/validat10.cpp
-        crypto++/validat1.cpp
-        crypto++/validat2.cpp
-        crypto++/validat3.cpp
-        crypto++/validat4.cpp
-        crypto++/validat5.cpp
-        crypto++/validat6.cpp
-        crypto++/validat7.cpp
-        crypto++/validat8.cpp
-        crypto++/validat9.cpp
         crypto++/vmac.cpp
         crypto++/wake.cpp
         crypto++/whrlpool.cpp
