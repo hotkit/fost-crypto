@@ -17,9 +17,6 @@ add_library(crypto++ STATIC
         crypto++/base32.cpp
         crypto++/base64.cpp
         crypto++/basecode.cpp
-        crypto++/bench1.cpp
-        crypto++/bench2.cpp
-        crypto++/bench3.cpp
         crypto++/bfinit.cpp
         crypto++/blake2b_simd.cpp
         crypto++/blake2.cpp
