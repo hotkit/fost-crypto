@@ -198,10 +198,12 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
             -Wno-unused-const-variable
             -Wno-unused-private-field
         )
+endif()
 
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
     ## `CRYPTOPP_DISABLE_AVX2` for fixing crypto++ not support avx2
     target_compile_definitions(crypto++ PRIVATE CRYPTOPP_DISABLE_AVX2)
-endif()
+endif ()
 
 if("${ANDROID_ABI}" STREQUAL "")
     # This assumes that we're going with x86 like systems if we're not building Android
