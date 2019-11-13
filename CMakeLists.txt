@@ -200,7 +200,7 @@ elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
         )
 endif()
 
-if (${CMAKE_XCODE_ATTRIBUTE_SDKROOT} STREQUAL "iphoneos")
+if (CMAKE_XCODE_ATTRIBUTE_SDKROOT STREQUAL "iphoneos")
     ## `CRYPTOPP_DISABLE_AVX2` for fixing crypto++ not support avx2
     target_compile_definitions(crypto++ PRIVATE CRYPTOPP_DISABLE_AVX2)
 endif ()
