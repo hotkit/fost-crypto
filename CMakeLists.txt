@@ -182,29 +182,30 @@ target_include_directories(crypto++ PUBLIC .)
 target_compile_options(crypto++ PRIVATE -fPIC)
 target_compile_features(crypto++ PUBLIC cxx_std_17)
 
-if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-    target_compile_definitions(crypto++ PUBLIC CRYPTOPP_DISABLE_AVX)
-    target_compile_options(crypto++ PRIVATE
-            -Wno-class-memaccess
-            -Wno-unknown-pragmas
-        )
-elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-    ## We need `CRYPTOPP_DISABLE_MIXED_ASM` because of a clang bug
-    ## mentioned in the crypto++ GNUmakefile
-    ## <https://bugs.llvm.org/show_bug.cgi?id=39895>
-    target_compile_definitions(crypto++ PRIVATE CRYPTOPP_DISABLE_MIXED_ASM)
-    target_compile_options(crypto++ PRIVATE
-            -Wno-keyword-macro
-            -Wno-unused-const-variable
-            -Wno-unused-private-field
-        )
-endif()
 
 if ("${CMAKE_XCODE_ATTRIBUTE_SDKROOT}" STREQUAL "iphoneos")
     ## `CRYPTOPP_DISABLE_AVX2` for ARM not having AVX2
-    target_compile_definitions(crypto++ PRIVATE CRYPTOPP_DISABLE_AVX2)
+    target_compile_definitions(crypto++ PRIVATE CRYPTOPP_DISABLE_ASM)
 elseif("${ANDROID_ABI}" STREQUAL "")
     # This assumes that we're going with x86 like systems if we're not building Android
+    if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+        target_compile_definitions(crypto++ PUBLIC CRYPTOPP_DISABLE_AVX)
+        target_compile_options(crypto++ PRIVATE
+                -Wno-class-memaccess
+                -Wno-unknown-pragmas
+            )
+    elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+        ## We need `CRYPTOPP_DISABLE_MIXED_ASM` because of a clang bug
+        ## mentioned in the crypto++ GNUmakefile
+        ## <https://bugs.llvm.org/show_bug.cgi?id=39895>
+        target_compile_definitions(crypto++ PRIVATE CRYPTOPP_DISABLE_MIXED_ASM)
+        target_compile_options(crypto++ PRIVATE
+                -Wno-keyword-macro
+                -Wno-unused-const-variable
+                -Wno-unused-private-field
+            )
+    endif()
+
     target_compile_options(crypto++
         PUBLIC -maes -mpclmul -msha -msse4.1 -msse4.2 -mssse3)
     install(TARGETS crypto++ LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
