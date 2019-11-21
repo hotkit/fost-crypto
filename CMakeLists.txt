@@ -213,6 +213,14 @@ else()
     include(AndroidNdkModules)
     android_ndk_import_module_cpufeatures()
     target_link_libraries(crypto++ cpufeatures)
+
+    target_compile_definitions(crypto++ PRIVATE CRYPTOPP_DISABLE_MIXED_ASM)
+    target_compile_options(crypto++ PRIVATE
+            -Wno-keyword-macro
+            -Wno-unused-const-variable
+            -Wno-unused-private-field
+        )
+        
     if(${ANDROID_ABI} MATCHES "^x86")
         target_compile_options(crypto++ PUBLIC
             -maes -mpclmul -msha -msse4.1 -msse4.2 -mssse3)
