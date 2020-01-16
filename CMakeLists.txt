@@ -194,7 +194,7 @@ elseif("${ANDROID_ABI}" STREQUAL "")
                 -Wno-class-memaccess
                 -Wno-unknown-pragmas
             )
-    elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
         ## We need `CRYPTOPP_DISABLE_MIXED_ASM` because of a clang bug
         ## mentioned in the crypto++ GNUmakefile
         ## <https://bugs.llvm.org/show_bug.cgi?id=39895>
