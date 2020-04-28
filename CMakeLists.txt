@@ -181,7 +181,7 @@ add_library(crypto++ STATIC
 target_include_directories(crypto++ PUBLIC .)
 target_compile_options(crypto++ PRIVATE -fPIC)
 target_compile_features(crypto++ PUBLIC cxx_std_17)
-
+target_compile_definitions(crypto++ PUBLIC CRYPTOPP_CXX17_EXCEPTIONS)
 
 if ("${CMAKE_XCODE_ATTRIBUTE_SDKROOT}" STREQUAL "iphoneos")
     ## `CRYPTOPP_DISABLE_AVX2` for ARM not having AVX2
