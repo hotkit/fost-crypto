@@ -210,7 +210,7 @@ elseif("${ANDROID_ABI}" STREQUAL "")
         PUBLIC -maes -mpclmul -msha -msse4.1 -msse4.2 -mssse3)
     install(TARGETS crypto++ LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 else()
-    include(AndroidNdkModules)
+    include(./AndroidNdkModules.cmake)
     android_ndk_import_module_cpufeatures()
     target_link_libraries(crypto++ cpufeatures)
 
